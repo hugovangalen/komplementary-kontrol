@@ -5,7 +5,6 @@
 // parsing configuration. 64 is probably more than enough.
 #define LINE_BUFSZ          256
 
-
 /*
  * This simply clears it out, making it unassigned and
  * clearing the label.
@@ -47,7 +46,7 @@ int preset_parse( t_preset_button * button, const char * line, int verbose )
             {
                 case '\0':
                 case ',': // separator or end of line, so anything before this
-                    if (verbose) printf( "phase %d, debug %s\n", phase, line+start );
+                    // if (verbose) printf( "phase %d, debug %s\n", phase, line+start );
                     int to_int_value = atoi(line+start);
                     if (phase > 0 && to_int_value > 127)
                     {

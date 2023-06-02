@@ -219,16 +219,20 @@ int main( int argc, char * argv[] )
 
             // Copy the values from that button to the buffer.
             const t_preset_button button = preset.button[ preset_button_index ];
-printf( "Button %d: %s type=%d chan=%2x %02x %02x %02x %02x\n", 
-        preset_button_index, 
-        button.label,
-        button.type,
-        button.channel,
-        button.data[0],
-        button.data[1],
-        button.data[2],
-        button.data[3]
-);
+
+            if (verbose)
+            {
+                printf( "Button %d: %s type=%d chan=%2x %02x %02x %02x %02x\n", 
+                        preset_button_index, 
+                        button.label,
+                        button.type,
+                        button.channel,
+                        button.data[0],
+                        button.data[1],
+                        button.data[2],
+                        button.data[3]
+                );
+            }
 
             wrap_fwrite( &button.type, 1 );
             wrap_fwrite( &button.channel, 1 );
