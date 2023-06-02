@@ -3,7 +3,7 @@ _Linux support for the Komplete Kontrol A-series keyboard by Native Instruments_
 
 ## DISCLAIMER : USE THIS AT YOUR OWN RISK ##
 I cannot be held responsible for any problems that might arise
-from using this utility. 
+from using these utilities.
 
 Now that that is out of the way...
 
