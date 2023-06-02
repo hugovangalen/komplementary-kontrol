@@ -1,11 +1,13 @@
-# Komplete Kontrol utility for Linux #
+# Komplementary Kontrol #
+_Linux support for the Komplete Kontrol A-series keyboard by Native Instruments_
 
-** DISCLAIMER : USE THIS AT YOUR OWN RISK **
+## DISCLAIMER : USE THIS AT YOUR OWN RISK ##
 I cannot be held responsible for any problems that might arise
 from using this utility. 
 
 Now that that is out of the way...
 
+## About ##
 This is a set of utilities to make the Komplete Kontrol A-series 
 keyboards usable under Linux.
 
