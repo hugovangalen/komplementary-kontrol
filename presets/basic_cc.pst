@@ -1,0 +1,49 @@
+# The name of the template (as it will appear on the OLED on the device).
+name=Basic CC
+
+# The button label includes the page and button index. Button0/0 implies
+# first page, first button, Button0/1 implies first page, 2nd button,
+# et cetera.
+# 
+# <button id>=<label>,<type>,<channel>,<...parameters>
+#
+# type 0 = CC
+# type 1 = PGM CHANGE
+
+# For some reason, labels aren't received properly and I haven't quite 
+# figured out as to why that only sporadically works.
+button0/0=Vol(CC7),0,0,7,0,0,127
+button0/1=Pan(CC10),0,0,10,0,0,127
+button0/2=CC20,0,0,20,0,0,127
+button0/3=CC21,0,0,21,0,0,127
+button0/4=CC22,0,0,22,0,0,127
+button0/5=CC23,0,0,23,0,0,127
+button0/6=CC24,0,0,24,0,0,127
+button0/7=CC25,0,0,25,0,0,127
+
+button1/0=CC32,0,0,32,0,0,127
+button1/1=CC33,0,0,33,0,0,127
+button1/2=CC34,0,0,34,0,0,127
+button1/3=CC35,0,0,35,0,0,127
+button1/4=CC36,0,0,36,0,0,127
+button1/5=CC37,0,0,37,0,0,127
+button1/6=CC38,0,0,38,0,0,127
+button1/7=CC39,0,0,39,0,0,127
+
+button2/0=CC40,0,0,40,0,0,127
+button2/1=CC41,0,0,41,0,0,127
+button2/2=CC42,0,0,42,0,0,127
+button2/3=CC43,0,0,43,0,0,127
+button2/4=CC44,0,0,44,0,0,127
+button2/5=CC45,0,0,45,0,0,127
+button2/6=CC46,0,0,46,0,0,127
+button2/7=CC47,0,0,47,0,0,127
+
+button3/0=CC102,0,0,102,0,0,127
+button3/1=CC103,0,0,103,0,0,127
+button3/2=CC104,0,0,104,0,0,127
+button3/3=CC105,0,0,105,0,0,127
+button3/4=CC106,0,0,106,0,0,127
+button3/5=CC107,0,0,107,0,0,127
+button3/6=CC108,0,0,108,0,0,127
+button3/7=CC109,0,0,109,0,0,127

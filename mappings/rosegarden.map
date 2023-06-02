@@ -1,0 +1,30 @@
+# Generic stuff
+Undo=LeftCtrl,Z
+Shift+Undo=LeftCtrl,LeftShift,Z
+
+# Transport:
+#Play=Play
+#Stop=StopCD
+#Record=Record
+Play=MMC_Play
+Stop=MMC_Stop
+Record=MMC_Record_Strobe
+Loop=LeftCtrl+L
+
+# Track stuff
+Shift+Mute=U
+Shift+Record=R
+Shift+Solo=S
+
+# Track navigation
+4D Up=Up
+4D Down=Down
+4D Left=PageDown
+4D Right=PageUp
+
+# Other
+Metro=O
+
+# Turning the 4D dial
+4D CW=LeftCtrl,Equal
+4D CCW=LeftCtrl,Minus
