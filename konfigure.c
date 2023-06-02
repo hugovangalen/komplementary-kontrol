@@ -29,8 +29,9 @@ static void print_usage( char * argv0 )
         "Usage: %s <options> -i path/to/preset.pst\n"
         "\n"
         "Options:\n"
-        " -i <path>    Path to preset definition.\n"
+        " -p <path>    Path to preset definition.\n"
         " -o <path>    Write SysEx to this file in stead of standard out.\n"
+        " -m <port>    Write SysEx directly to this ALSA MIDI port.\n"
         " -q           Be less verbose.\n\n"
         RISK_DISCLAIMER,
         argv0
@@ -102,7 +103,7 @@ int main( int argc, char * argv[] )
     
     int opt;
     
-    while ((opt = getopt( argc, argv, "i:o:p:hq" )) != -1)
+    while ((opt = getopt( argc, argv, "p:o:m:hq" )) != -1)
     {
         switch(opt)
         {
@@ -110,7 +111,7 @@ int main( int argc, char * argv[] )
                 print_usage( argv[0] );
                 return 0;
                 
-            case 'i':
+            case 'p':
                 // input file, presets file.
                 preset_path = optarg;
                 break;
@@ -120,7 +121,7 @@ int main( int argc, char * argv[] )
                 output_path = optarg;
                 break;
                 
-            case 'p':
+            case 'm':
                 // this sets the ALSA MIDI output port to 
                 // send the bytes to.
                 alsa_midi_port = optarg;
