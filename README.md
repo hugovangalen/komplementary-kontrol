@@ -38,6 +38,12 @@ To compile the binaries, simply run
     
 If you want to install it on your system, run 
     `sudo make install`
+    
+> Note: Installation will also create the folders `/usr/share/komplement` where 
+> the mappings are stored, and `/usr/share/konfigure` for the presets. This is 
+> where the utilities will try to find the files if they do not exist in the 
+> path (i.e. running `komplement -m rosegarden.map` will load it 
+> from `/usr/share/komplement/rosegarden.map`).
 
 ## komplement ##
 This basically works by reading the relevant /dev/input/hiddevX and 
