@@ -1,12 +1,12 @@
 #include "mapping.h"
 
 
-static mapping_key_t mapping[ BUTTON_TOTAL ];
-static mapping_key_t shifted_mapping[ BUTTON_TOTAL ];
+static mapping_key_t mapping[ REAL_BUTTON_TOTAL ];
+static mapping_key_t shifted_mapping[ REAL_BUTTON_TOTAL ];
 
 void mapping_init()
 {
-    for(int i=0; i<BUTTON_TOTAL; i++)
+    for(int i=0; i<REAL_BUTTON_TOTAL; i++)
     {
         mapping[i].length = 0;
         shifted_mapping[i].length = 0;

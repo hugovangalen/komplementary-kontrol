@@ -418,24 +418,20 @@ int main(int argc, char* argv[])
                         {
                         
                             // BUTTON STATE
-                            printf( "%s (button %d): ", get_button_name(button_number), button_number );
+                            if (!cfg.quiet) 
+                            {
+                                printf( "%s (button %d): %s\n", 
+                                        get_button_name(button_number), 
+                                        button_number,  
+                                        new_button_state ? "PRESS" : "RELEASE" 
+                                );
+                            }
                             
                             const mapping_key_t send_key = button_state[0] 
                                 ? mapping_get_shifted( button_number )
                                 : mapping_get( button_number );
                             
-                            if (new_button_state) 
-                            {
-                                send_key_wrap( fd_uinput, send_key, 1 );
-                                printf( "PRESS" );
-                            }
-                            else
-                            {
-                                send_key_wrap( fd_uinput, send_key, 0 );
-                                printf( "RELEASE" );
-                            }
-                            
-                            printf( "\n" ); 
+                            send_key_wrap( fd_uinput, send_key, new_button_state );   
                         }
                     }
                     
@@ -447,10 +443,10 @@ int main(int argc, char* argv[])
     
 clean_up_and_exit:
 
+    // clean-up stuff
     alsa_close_client();
     fancy_button_leds_off();
     
-    // clean-up stuff
     if (cfg.uinput_path) free(cfg.uinput_path);
     if (cfg.hiddev_path) free(cfg.hiddev_path);
     if (cfg.mapping_path) free(cfg.mapping_path);
