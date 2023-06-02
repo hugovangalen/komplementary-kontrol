@@ -97,7 +97,7 @@ can use it too!)
 Example usage that loads the Rosegarden mapping and uses /dev/input/hiddev0 
 and /dev/uinput as input and output respectively:
 ```
-$> ./kontroller -l mappings/rosegarden.map -i /dev/input/hiddev0 -o /dev/uinput
+$> ./komplement -m mappings/rosegarden.map -i /dev/input/hiddev0 -o /dev/uinput
 ```
 
 (The above example assumes that the permissions are correctly set up.)
