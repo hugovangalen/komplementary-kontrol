@@ -1,0 +1,3 @@
+# Allow members of the group `audio` to access this device.
+SUBSYSTEM=="usb", ATTRS{idVendor}=="17cc", ATTRS{idProduct}=="1730", MODE="0660", GROUP="audio"
+KERNEL=="hiddev*", ATTRS{idVendor}=="17cc", ATTRS{idProduct}=="1730", MODE="0660", GROUP="audio"
