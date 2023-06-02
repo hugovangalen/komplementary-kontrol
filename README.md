@@ -112,8 +112,8 @@ $> ./komplement -m mappings/rosegarden.map -i /dev/input/hiddev0 -o /dev/uinput
 This is a utility that creates a SysEx file that can be sent to the device
 to configure it the rotary knobs.
 
-#### Mapping files ####
-An example mapping file is supplied in `presets/basic_cc.pst` that 
+#### Preset files ####
+An example preset file is supplied in `presets/basic_cc.pst` that 
 maps a few CC to the buttons.
 
 #### Examples ####
