@@ -1,5 +1,7 @@
 # Komplementary Kontrol #
-_Linux support for the Komplete Kontrol A-series keyboard by Native Instruments_
+_Unofficial Linux support for the Komplete Kontrol A-series keyboard by Native Instruments_
+
+> I am in no way affiliated with Native Instruments - I just like their kit.
 
 ## DISCLAIMER : USE THIS AT YOUR OWN RISK ##
 I cannot be held responsible for any problems that might arise
@@ -24,7 +26,6 @@ usable on your system. See below.
 The `konfigure` tool generates SysEx packets that can be sent
 to the device to configure the current preset (i.e. that maps the 
 rotary dials to actual MIDI events). See below.
-
 
 ### Compiling and installing ###
 The `konfigure` requires libasound2-dev, the `komplement` tool additionally
