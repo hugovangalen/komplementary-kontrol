@@ -33,9 +33,6 @@ typedef struct t_komplement_config {
     // Path to mapping configuration.
     char * mapping_path;
     
-    // Path to hiddev file (default /dev/usb/hiddev0)
-    char * hiddev_path;
-    
     // The default uinput path (default /dev/uinput)
     char * uinput_path;
     

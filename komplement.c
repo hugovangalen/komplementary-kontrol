@@ -27,7 +27,6 @@ static void print_usage( char * argv0 )
         "to keyboard presses, so they will become usable in your software of choice.\n\n"   
         "Usage: %s <options>\n\n"
         "Options:\n"
-        " -i /path/to/hiddev   The path to relevant hiddev device (" DEFAULT_HIDDEV_PATH ").\n"
         " -o /path/to/uinput   The path to uinput device file (" DEFAULT_UINPUT_PATH ").\n"
         " -m /path/to/mapping  The path to mapping file (required to be useful).\n"
         " -a                   Do not create ALSA MIDI output port for MMC messages.\n"
@@ -173,7 +172,7 @@ int main(int argc, char* argv[])
     
     int opt;
     int total_options_parsed = 0;
-    while ((opt = getopt( argc, argv, "v:p:m:o:i:qnha" )) != -1)
+    while ((opt = getopt( argc, argv, "v:p:m:o:qnha" )) != -1)
     {
         total_options_parsed++;
         switch(opt)
@@ -193,10 +192,6 @@ int main(int argc, char* argv[])
                 
             case 'm': 
                 cfg.mapping_path = strdup(optarg);
-                break;
-            
-            case 'i': 
-                cfg.hiddev_path = strdup(optarg);
                 break;
             
             case 'o': 
@@ -222,11 +217,6 @@ int main(int argc, char* argv[])
     {
         print_usage( argv[0] );
         return 1;
-    }
-    
-    if (!cfg.hiddev_path)
-    {
-        cfg.hiddev_path = strdup( DEFAULT_HIDDEV_PATH );
     }
     
     if (!cfg.uinput_path)
@@ -348,7 +338,7 @@ int main(int argc, char* argv[])
         printf( 
             "Opening the device file at %s failed.\n"
             "Can it be read by the current user?\n",
-            cfg.hiddev_path
+            cfg.uinput_path
         );
         
         return_code = -2;
@@ -522,7 +512,6 @@ clean_up_and_exit:
     alsa_close_client();
         
     if (cfg.uinput_path) free(cfg.uinput_path);
-    if (cfg.hiddev_path) free(cfg.hiddev_path);
     if (cfg.mapping_path) free(cfg.mapping_path);
     
     //if (fd>-1) close(fd);
