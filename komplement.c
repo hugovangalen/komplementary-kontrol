@@ -241,6 +241,27 @@ int main(int argc, char* argv[])
     // Set up the button mappings...
     mapping_init();
 
+    
+    // Read the configuration, and then only light up
+    // those buttons that have an actual mapping.;
+    if (cfg.mapping_path)
+    {
+        if (config_read( cfg.mapping_path, cfg.quiet ? 0 : 1 ) < 0)
+        {
+            printf( "The mapping file could not be read.\n" );
+            return_code = 2;
+            goto clean_up_and_exit;
+        }
+    }
+    else
+    {
+        print_usage( argv[0] );
+        printf( "ERROR: The -m <mapping> option is required.\n" );
+        return_code = 1;
+        
+        goto clean_up_and_exit;
+    }
+   
     // Initialise HIDAPI:
     hidstuff_init( cfg.vid, cfg.pid );
     
@@ -265,27 +286,7 @@ int main(int argc, char* argv[])
     {
         leds_animate_on(cfg.vid, cfg.pid);
     }
-    
-    // Read the configuration, and then only light up
-    // those buttons that have an actual mapping.;
-    if (cfg.mapping_path)
-    {
-        if (config_read( cfg.mapping_path, cfg.quiet ? 0 : 1 ) < 0)
-        {
-            printf( "The mapping file could not be read.\n" );
-            return_code = 2;
-            goto clean_up_and_exit;
-        }
-    }
-    else
-    {
-        print_usage( argv[0] );
-        printf( "ERROR: The -m <mapping> option is required.\n" );
-        return_code = 1;
         
-        goto clean_up_and_exit;
-    }
-    
    
     // Initial LED state.
     if (lightup_initial() < 0)
