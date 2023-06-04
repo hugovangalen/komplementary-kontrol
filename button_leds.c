@@ -1,70 +1,65 @@
 #include "button_leds.h"
 
+/*
+ * Buffer for the HID data that is sent to the device to 
+ * change the state.
+ */
 static unsigned char button_hid_data[ 1 + TOTAL_HID_BUTTONS ]; // so 22 items, 21 max index
 
-static int vid = 0; // vendor id
-static int pid = 0; // product id
 
-void clear_button_leds()
+
+/*
+ * Clear out all leds to 'off'
+ */
+void leds_clear()
 {
     memset(button_hid_data + 1,0,TOTAL_HID_BUTTONS);
 }
 
-int init_button_leds( int vendorid, int productid )
+
+
+/* 
+ * This initialises the internal buffer that is sent
+ * over the wire as HID data.
+ */
+void leds_init()
 {
-    vid = vendorid;
-    pid = productid;
-    
     // Initialise the hid data packet.
     button_hid_data[ 0 ] = 0x80;
-    clear_button_leds();
-    
-    // Initialise HIDAPI.
-    return hid_init();
+    leds_clear();
 }
 
 
-int fini_button_leds()
-{
-    // Cleanup HIDAPI.
-    return hid_exit();
-}
 
-void update_button_led_real( int index, char intensity )
+/*
+ * Updates a single LED. State is either LED_OFF, LED_ON
+ * or LED_BRIGHT.
+ * 
+ * This still requires a call to `leds_sync()` to actually
+ * send it over to the device.
+ */
+void leds_update_led( int index, int state )
 {
     if (index < TOTAL_HID_BUTTONS)
     {
-        button_hid_data[ index + 1 ] = intensity;
+        button_hid_data[ index + 1 ] = state;
     }
 }
 
-void update_button_led( int index, int state )
+
+/*
+ * Syncs the LED state.
+ */
+int leds_sync(int vid, int pid)
 {
-    update_button_led_real( index, state ? 0x7c : 0x00 );
+    char receive_buffer[ 22 ];
+    return hidstuff_send_raw( 
+        button_hid_data, 
+        sizeof button_hid_data,
+        receive_buffer,
+        0
+    );
 }
-
-
-int sync_button_leds()
-{
-    if (!vid || !pid)
-    {
-        printf( "No USB device configured.\n" ); // %04x:%04x is in
-        return -1;
-    }
-    
-    // Attempt to open things...
-    hid_device * device = hid_open( vid, pid, NULL );
-    if (!device)
-    {
-        // printf( "hid_open() failed\n" );
-        return -2;
-    }
-    
-    // 
-    int result = hid_write( device, button_hid_data, sizeof button_hid_data );
-    hid_close( device );
-}
-
 
 
 /** 
@@ -74,7 +69,7 @@ int sync_button_leds()
 #define ANIMATE_COLUMNS     11
 #define ANIMATE_DELAY       30000
 
-#define ANIMWAIT            sync_button_leds(); usleep( ANIMATE_DELAY )
+#define ANIMWAIT            leds_sync(vid,pid); usleep( ANIMATE_DELAY )
 
 static char animation_sequence[ANIMATE_COLUMNS][5] = {
     {  0,  3,  6,  9, 19 },
@@ -91,7 +86,7 @@ static char animation_sequence[ANIMATE_COLUMNS][5] = {
 };
 
 
-void fancy_button_leds()
+void leds_animate_on( int vid, int pid )
 {   
 /*
     // Wipe from Left to Right
@@ -124,14 +119,14 @@ void fancy_button_leds()
         {
             if (animation_sequence[i][j] >= 0)
             {
-                update_button_led( animation_sequence[i][j], 1 );
+                leds_update_led( animation_sequence[i][j], LED_ON );
             }
             
             if (i < ANIMATE_COLUMNS - 1)
             {
                 if (animation_sequence[i+1][j] >= 0)
                 {
-                    update_button_led( animation_sequence[i+1][j], 0 );
+                    leds_update_led( animation_sequence[i+1][j], LED_OFF );
                 }
             }
         }
@@ -142,33 +137,42 @@ void fancy_button_leds()
 #ifdef SIMPLE_ORDER
     for(int i=0; i<TOTAL_HID_BUTTONS; i++)
     {
-        update_button_led( i, 1 ); // turn on
-        sync_button_leds();
+        leds_update_led( i, LED_ON ); // turn on
+        leds_sync(vid,pid);
         usleep( 155000 );
         
-        update_button_led( i, 0 ); // turn off
-        sync_button_leds();
+        leds_update_led( i, LED_OFF ); // turn off
+        leds_sync(vid,pid);
     }
     
 #endif
 
     // Finally turn them all off.
-    clear_button_leds();
-    sync_button_leds();
+    leds_off(vid,pid);
 }
 
 
 
 /*
- * This turns all the buttons off, from index 0 to 21.
+ * This turns all the buttons off, from index 0 to 21 with 
+ * a slight delay in between.
  */
-void fancy_button_leds_off()
+void leds_animate_off( int vid, int pid )
 {
     for(int i=0; i < TOTAL_HID_BUTTONS; i++)
     {
-        update_button_led( i, 0 );
+        leds_update_led( i, LED_OFF );
+        leds_sync( vid, pid ); 
         
-        sync_button_leds(); 
         usleep( 5000 );
     }        
+}
+
+/*
+ * Turns all LEDs off, without any delay.
+ */
+void leds_off(int vid, int pid)
+{
+    leds_clear();
+    leds_sync(vid,pid);
 }

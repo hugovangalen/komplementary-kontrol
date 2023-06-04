@@ -34,6 +34,6 @@ void mapping_set_shifted( int index, mapping_key_t key );
 mapping_key_t mapping_get( int index );
 mapping_key_t mapping_get_shifted( int index );
 
-int mapping_is_mapped( int index );
+int mapping_is_mapped( int index, int shifted );
 
 #endif /* _MAPPING_H_*/

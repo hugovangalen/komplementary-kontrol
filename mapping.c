@@ -41,9 +41,18 @@ mapping_key_t mapping_get_shifted( int index )
 /*
  * @returns 1 if it is in any way mapped, 0 otherwise.
  */
-int mapping_is_mapped( int index )
+int mapping_is_mapped( int index, int shifted )
 {
-    return (mapping[ index ].length > 0
-        || shifted_mapping[ index ].length > 0) ? 1 : 0;
+    if (shifted == 1) {
+        // mappings with shift only
+        return (shifted_mapping[ index ].length > 0) ? 1 : 0;
         
+    } else if (shifted == -1) {
+        // only normal mappings without shift
+        return (mapping[ index ].length > 0) ? 1 : 0;
+    }
+
+    // any mapping at all
+    return (mapping[ index ].length > 0
+            || shifted_mapping[ index ].length > 0) ? 1 : 0;
 }

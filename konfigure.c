@@ -26,7 +26,7 @@ static void print_usage( char * argv0 )
     printf( 
         KONFIGURE_NAME " v" KONFIGURE_VERSION " by @hvangalen@mastodon.nl\n\n"
         "This utility generates SysEx to configure Komplete Kontrol A-series keyboards.\n\n"
-        "Usage: %s <options> -i path/to/preset.pst\n"
+        "Usage: %s <options> -p path/to/preset.pst\n"
         "\n"
         "Options:\n"
         " -p <path>    Path to preset definition.\n"
@@ -138,7 +138,7 @@ int main( int argc, char * argv[] )
     if (preset_path == NULL)
     {
         print_usage( argv[0] );
-        printf( "ERROR: The -i <preset> option is required.\n" );
+        printf( "ERROR: The -p <preset> option is required.\n" );
         return 1;        
     }
     
@@ -330,25 +330,14 @@ int main( int argc, char * argv[] )
     // 0000   f0 00 21 09 30 17 4d 43 01 00 03 18 00 00 00 40   ..!.0.MC.......@
     // 0010   03 00 7f 00 00 41 02 00 7f 00 00 00 00 00 00 00   .....A..........
     // 0020   01 00 03 00 01 f7                                 ......
-    
-    // LEAD_IN
-    wrap_fwrite( pedal_lead_in, 1, PEDAL_LEAD_IN_SZ, output );
-    
-    for (int button=0; button<4; button++)
-    {
-        // This just turns the buttons off, I guess.
-        buffer[ 0 ] = 0x00;
-        buffer[ 1 ] = 0x00;
-        buffer[ 2 ] = 0x00;
-        buffer[ 3 ] = 0x00;
-        buffer[ 4 ] = 0x00;
-        buffer[ 5 ] = 0x00;
-        
-        wrap_fwrite( buffer, 1, 6, output );
-    }
- 
-    // LEAD_OUT
-    wrap_fwrite( sysex_end, 1, SYSEX_END_SZ, output );   
+    unsigned char pedal_buffer[] = PEDAL_LEAD_IN
+        PEDAL_PAYLOAD
+        LEAD_OUT;
+
+    // Right now we will just send the defaults from the 
+    // standard Template 1 that the device configures with.
+    wrap_fwrite( pedal_buffer, PEDAL_SYSEX_SZ, output );
+
 #endif /* PEDAL_TOO */
 
 cleanup:

@@ -19,13 +19,20 @@
 #include "konfigure_parser.h"
 #include "defs.h"
 #include "version.h"
+#include "hid.h"
 
 // SysEx fixed values.
 #define LEAD_IN         "\xf0\x00\x21\x09\x30\x17\x4d\x43\x01\x00\x01\x0a\x04"
 #define LEAD_IN_SZ      13
 
+// The size of the normal buttons SysEx packet:
+#define BUTTON_SYSEX_SZ     536
+
 #define PEDAL_LEAD_IN       "\xf0\x00\x21\x09\x30\x17\x4d\x43\x01\x00\x03\x18\x00"
 #define PEDAL_LEAD_IN_SZ    13
+
+// The size of (what I guess is) the pedal SysEx configuration packet:
+#define PEDAL_SYSEX_SZ      38
 
 // This is just an end-of-sysex packet, really.
 #define SYSEX_END       "\xf7"

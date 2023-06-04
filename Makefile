@@ -53,16 +53,18 @@ komplement.o: button_names.h komplement.c button_leds.h version.h defs.h alsa.h 
 
 button_names.o: button_names.c button_names.h defs.h 
 
-button_leds.o: button_leds.c button_leds.h defs.h
+hid.o: hid.c hid.h
+
+button_leds.o: button_leds.c button_leds.h defs.h hid.h
 
 uinput_stuff.o: uinput_stuff.c uinput_stuff.h defs.h
 
 # `komplementary` is the user space utility that translates
 # HID events to keypresses.
-komplement: komplement.o button_names.o uinput_stuff.o mapping.o config.o button_leds.o alsa.o mmc_stuff.o
+komplement: komplement.o button_names.o uinput_stuff.o mapping.o config.o hid.o button_leds.o alsa.o mmc_stuff.o
 	$(GCC) -o komplement \
 		komplement.o button_names.o uinput_stuff.o alsa.o \
-		mapping.o config.o button_leds.o mmc_stuff.o \
+		mapping.o config.o hid.o button_leds.o mmc_stuff.o \
 		$(KOMPLEMENT_LFLAGS)
 
 # `konfigure` is a binary that creates SysEx to send to the

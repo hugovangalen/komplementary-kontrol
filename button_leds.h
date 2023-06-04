@@ -6,18 +6,20 @@
 #include <string.h>
 #include <unistd.h>
 
-#include <hidapi/hidapi.h>
+#include "hid.h"
 
-#define TOTAL_HID_BUTTONS  21
+#define TOTAL_HID_BUTTONS     21
 
-int init_button_leds( int vid, int pid );
-int fini_button_leds();
+#define LED_BRIGHT          0x7e
+#define LED_ON              0x7c
+#define LED_OFF             0x00
 
-void update_button_led( int index, int state );
-void clear_button_leds();
-int sync_button_leds();
-
-void fancy_button_leds();
-void fancy_button_leds_off();
+void leds_init();
+void leds_clear();
+void leds_update_led( int index, int state );
+int leds_sync( int vid, int pid );
+void leds_animate_on( int vid, int pid );
+void leds_animate_off( int vid, int pid );
+void leds_off( int vid, int pid );
 
 #endif /* _BUTTON_LEDS_H_ */
