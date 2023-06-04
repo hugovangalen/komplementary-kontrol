@@ -47,7 +47,7 @@ If you want to install it on your system, run
 > from `/usr/share/komplement/rosegarden.map`).
 
 ## komplement ##
-This basically works by reading the relevant /dev/input/hiddevX and 
+This basically works by reading the relevant USB HID packets and 
 mapping that to keys useful for your favourite software. 
 
 This means that if your software is not the active window, any other 
@@ -61,7 +61,7 @@ If you are done using it, you can simply hit Ctrl+C to abort it and it shall
 gracefully exit.
 
 #### Permissions ####
-This utility required *read* access to `/dev/input/hiddevX` and *write* access 
+This utility required read/write access to the USB device and only *write*
 to `/dev/uinput` for sending keypresses.
 > Note that it doesn't read from uinput, so your passwords are safe.
 
@@ -101,10 +101,9 @@ can use it too!)
 
 
 #### Examples ####
-Example usage that loads the Rosegarden mapping and uses /dev/input/hiddev0 
-and /dev/uinput as input and output respectively:
+Example usage that loads the Rosegarden mapping and /dev/uinput for output:
 ```
-$> ./komplement -m mappings/rosegarden.map -i /dev/input/hiddev0 -o /dev/uinput
+$> ./komplement -m mappings/rosegarden.map -o /dev/uinput
 ```
 
 (The above example assumes that the permissions are correctly set up.)
