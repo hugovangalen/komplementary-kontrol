@@ -272,9 +272,7 @@ int main(int argc, char* argv[])
     
     // This resets the HID device back to "MIDI Mode":
     unsigned char hid_packet_midi_mode[] = { 0xa0, 0x07, 0x00 };
-    unsigned char hid_response_buffer[ 1024 ];
-    
-    hidstuff_send_raw( hid_packet_midi_mode, 3, hid_response_buffer, 0 );
+    hidstuff_send_raw( hid_packet_midi_mode, 3, NULL, 0 );
     
     // Button led state initialise.
     leds_init();
