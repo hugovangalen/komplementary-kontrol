@@ -17,9 +17,9 @@
 void leds_init();
 void leds_clear();
 void leds_update_led( int index, int state );
-int leds_sync( int vid, int pid );
-void leds_animate_on( int vid, int pid );
-void leds_animate_off( int vid, int pid );
-void leds_off( int vid, int pid );
+int leds_sync();
+void leds_animate_on();
+void leds_animate_off();
+void leds_off();
 
 #endif /* _BUTTON_LEDS_H_ */

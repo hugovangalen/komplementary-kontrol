@@ -50,7 +50,7 @@ void leds_update_led( int index, int state )
 /*
  * Syncs the LED state.
  */
-int leds_sync(int vid, int pid)
+int leds_sync()
 {
     char receive_buffer[ 22 ];
     return hidstuff_send_raw( 
@@ -69,7 +69,7 @@ int leds_sync(int vid, int pid)
 #define ANIMATE_COLUMNS     11
 #define ANIMATE_DELAY       30000
 
-#define ANIMWAIT            leds_sync(vid,pid); usleep( ANIMATE_DELAY )
+#define ANIMWAIT            leds_sync(); usleep( ANIMATE_DELAY )
 
 static char animation_sequence[ANIMATE_COLUMNS][5] = {
     {  0,  3,  6,  9, 19 },
@@ -86,7 +86,7 @@ static char animation_sequence[ANIMATE_COLUMNS][5] = {
 };
 
 
-void leds_animate_on( int vid, int pid )
+void leds_animate_on()
 {   
 /*
     // Wipe from Left to Right
@@ -138,17 +138,17 @@ void leds_animate_on( int vid, int pid )
     for(int i=0; i<TOTAL_HID_BUTTONS; i++)
     {
         leds_update_led( i, LED_ON ); // turn on
-        leds_sync(vid,pid);
+        leds_sync();
         usleep( 155000 );
         
         leds_update_led( i, LED_OFF ); // turn off
-        leds_sync(vid,pid);
+        leds_sync();
     }
     
 #endif
 
     // Finally turn them all off.
-    leds_off(vid,pid);
+    leds_off();
 }
 
 
@@ -157,12 +157,12 @@ void leds_animate_on( int vid, int pid )
  * This turns all the buttons off, from index 0 to 21 with 
  * a slight delay in between.
  */
-void leds_animate_off( int vid, int pid )
+void leds_animate_off()
 {
     for(int i=0; i < TOTAL_HID_BUTTONS; i++)
     {
         leds_update_led( i, LED_OFF );
-        leds_sync( vid, pid ); 
+        leds_sync(); 
         
         usleep( 5000 );
     }        
@@ -171,8 +171,8 @@ void leds_animate_off( int vid, int pid )
 /*
  * Turns all LEDs off, without any delay.
  */
-void leds_off(int vid, int pid)
+void leds_off()
 {
     leds_clear();
-    leds_sync(vid,pid);
+    leds_sync();
 }
