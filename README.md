@@ -14,7 +14,7 @@ This is a set of utilities to make the Komplete Kontrol A-series
 keyboards usable under Linux.
 
 This has been developed using a A25 but I don't see any reason why 
-this could not work on the A49 or other keyboards.
+this could not work for the other A-series keyboards.
 
 It consists of two utilities:
 - `komplement`
@@ -34,17 +34,17 @@ requires libhidapi-libusb0.
 To install required libraries, run
     `apt install libhidapi-libusb0 libasound2-dev`
 
-To compile the binaries, simply run 
+To compile the binaries, run 
     `make all`
     
 If you want to install it on your system, run 
     `sudo make install`
     
-> Note: Installation will also create the folders `/usr/share/komplement` where 
-> the mappings are stored, and `/usr/share/konfigure` for the presets. This is 
-> where the utilities will try to find the files if they do not exist in the 
-> path (i.e. running `komplement -m rosegarden.map` will load it 
-> from `/usr/share/komplement/rosegarden.map`).
+> Note: Installation will also create the folders `/usr/share/komplementary-control/mappings` 
+> and `/usr/share/komplementary-control/presets` where the mappings and presets are copied to.
+> This is where the utilities will try to find the files if they do not exist in the path, so
+> running `komplement -m rosegarden.map` will load it from 
+> `/usr/share/komplementary-kontrol/mappings/rosegarden.map`.
 
 ## komplement ##
 This basically works by reading the relevant USB HID packets and 
