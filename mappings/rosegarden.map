@@ -24,6 +24,9 @@ Shift+Solo=S
 
 # Other
 Metro=O
+# ARP toggles "receive external" for the current track
+Arp=LeftShift+P
+Quantize=Equal
 
 # Turning the 4D dial
 4D CW=LeftCtrl,Equal
