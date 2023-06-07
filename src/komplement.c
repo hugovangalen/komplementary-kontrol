@@ -120,6 +120,8 @@ static void lightup_normal()
  * because I think it's cool.
  * 
  * If cfg.animate is false it will be as good as instant.
+ * 
+ * Returns -1 if the LEDs could not be synced, 0 otherwise.
  */
 static int lightup_initial()
 {
@@ -137,6 +139,8 @@ static int lightup_initial()
         if (cfg.animate)
             usleep( 5000 );
     }
+    
+    return 0;
 }
 
 
@@ -231,13 +235,6 @@ int main(int argc, char* argv[])
     signal( SIGQUIT, handle_interrupt );
     
 
-    // There are 54 packets of 8 bytes in size.
-#define KEYPRESS_PACKETS_TOTAL  54
-    const int packets_expected = KEYPRESS_PACKETS_TOTAL;
-
-    // Buffer for a single packet.
-    unsigned char packet[ PACKET_SZ ];
-    
     // Set up the button mappings...
     mapping_init();
 
@@ -323,9 +320,6 @@ int main(int argc, char* argv[])
     char button_state[ MAX_BUTTONS ]; // button 0..39
     memset( button_state, 0, MAX_BUTTONS );
     
-    // for iterating
-    int button_number;
-    
     // Set up uinput device.
     int fd_uinput = uinput_open( cfg.uinput_path );
     if (fd_uinput < 0)
@@ -347,43 +341,37 @@ int main(int argc, char* argv[])
     int read_errors = 0;
     
     char position_4d_dial = -1; // to determine the way the dial goes
-    // int value_4d_dial = 0;           // the real dial value that can be mapped to something?
-    
-    bool shift_state_changed = false;
     bool shift_was_pressed = false;
-    
-    bool shift_outgoing_pressed = false;
     
     // read packets until interrupted
     while (read_aborted == 0)
     {
-        /*
-        // Set up for polling...
-        FD_ZERO( &rfds );
-        FD_SET( fd, &rfds );
-        
-        tv.tv_sec = 5;
-        tv.tv_usec = 0;
-        
-        select_result = select(fd+1, &rfds, NULL, NULL, &tv );
-        if (select_result == -1) {
-            perror( "select" );
-            break;
-        }
-        else if (select_result == 0) 
-        {
-            // No data yet, so loop again.
-            continue;
-        }
-        */
-        
-        size_t keypress_buffer_size = 30; //
+        size_t keypress_buffer_size = 30; 
         unsigned char keypress_buffer[ 30 ];      
 //        printf( "trying to read...\n" );
         
         //int keypress_buffer_read = hidstuff_read_raw( &keypress_buffer, keypress_buffer_size, 1 );
         int keypress_buffer_read = hidstuff_read_raw_timeout( &keypress_buffer, keypress_buffer_size, 2000 );
-        if (keypress_buffer_read == 0) continue;
+        if (keypress_buffer_read == -1) 
+        {
+            printf( "Error reading HID device.\n" );
+            
+            read_errors++;
+            if (read_errors > 10) 
+            {
+                printf( "Too many read errors, aborting." );
+                goto clean_up_and_exit;
+            }
+            
+            continue;
+        }
+        else if (keypress_buffer_read == 0) 
+        {
+            continue;
+        }
+        
+        // If we get here, we clear out read_errors.
+        read_errors = 0;
         
 #ifdef KEYS_DEBUG
         printf( "read %d\n", keypress_buffer_read );
@@ -427,13 +415,29 @@ int main(int argc, char* argv[])
             
             shift_was_pressed = shift_is_pressed;
 
-            // If SHIFT is released before any other button is released, the wrong
-            // key release event might be sent down the line, so in that case we 
-            // just assume all buttons are released.
+            
+            // Note that, when SHIFT is released before any other button is released, 
+            // the code handling key releases will send the incorrect release because
+            // the lookup of the mapping is affected by the (changed) SHIFT state.
+            //
+            // So if SHIFT is released, also any other button state should be reset,
+            // and any held down buttons assumed to be released, too.
             if (!shift_is_pressed)
             {
-                // Assume all have been released.
-                memset( button_state, MAX_BUTTONS, 0 );
+                // Find the buttons that were pressed (apart from SHIFT).
+                for(int si=1; si < MAX_BUTTONS; si++)
+                {
+                    if (button_state[si])
+                    {
+                        send_key_wrap( fd_uinput, 
+                                       mapping_get_shifted( si ), 
+                                       0 );
+                    }
+
+                } // for...
+                
+                // And clear it all out.
+                memset( button_state, 0, MAX_BUTTONS );
             }
         }
         

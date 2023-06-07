@@ -4,6 +4,9 @@
 static snd_seq_t * handle = NULL;
 static int output_port = -1;
 
+/*
+ * Creates the output port.
+ */
 int alsa_create_output_port()
 {
     return snd_seq_create_simple_port( 
@@ -51,6 +54,8 @@ void alsa_close_client()
 
 /*
  * Sends the MMC message in `command` down the wire.
+ * 
+ * Returns negative values on error, 0 otherwise.
  */
 int alsa_send_mmc( unsigned char command, unsigned char channel )
 {
@@ -89,6 +94,6 @@ int alsa_send_mmc( unsigned char command, unsigned char channel )
     ev.type = SND_SEQ_EVENT_SYSEX;
     
     snd_seq_ev_set_sysex(&ev, 6, mmc_buffer);
-    snd_seq_event_output_direct( handle, &ev );
+    return snd_seq_event_output_direct( handle, &ev );
 }
 

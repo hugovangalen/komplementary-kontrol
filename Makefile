@@ -1,4 +1,4 @@
-GCC=gcc
+CC=gcc
 RM=rm
 CP=cp
 MKDIR=mkdir -p
@@ -6,9 +6,15 @@ STRIP=strip
 
 PREFIX ?= /usr
 
-MAPPINGS_PATH = $(PREFIX)/share/komplement
-PRESETS_PATH = $(PREFIX)/share/konfigure
+SRCDIR = src
+BUILDDIR = obj
 
+vpath %.c $(SRCDIR)
+
+MAPPINGS_PATH = $(PREFIX)/share/komplementary-kontrol/mappings
+PRESETS_PATH = $(PREFIX)/share/komplementary-kontrol/presets
+
+CFLAGS+=-Wall
 CFLAGS+=-DMAPPINGS_PATH="\"$(MAPPINGS_PATH)\""
 CFLAGS+=-DPRESETS_PATH="\"$(PRESETS_PATH)\""
 
@@ -18,7 +24,21 @@ KOMPLEMENT_LFLAGS=-lhidapi-libusb -lasound
 # Linker flags for `konfigure` tool.
 KONFIGURE_LFLAGS=-lasound
 
-all: komplement konfigure
+KOMPLEMENT_SOURCES=$(SRCDIR)/komplement.c $(SRCDIR)/button_names.c $(SRCDIR)/uinput_stuff.c\
+	$(SRCDIR)/mapping.c $(SRCDIR)/config.c $(SRCDIR)/hid.c $(SRCDIR)/button_leds.c\
+	$(SRCDIR)/alsa.c $(SRCDIR)/mmc_stuff.c
+
+KONFIGURE_SOURCES=$(SRCDIR)/konfigure.c $(SRCDIR)/konfigure_parser.c
+
+KOMPLEMENT_OBJECTS=$(KOMPLEMENT_SOURCES:src/%.c=obj/%.o)
+KONFIGURE_OBJECTS=$(KONFIGURE_SOURCES::src/%.c=obj/%.o)
+
+all: checkdir komplement konfigure
+
+checkdir: $(BUILDDIR)
+
+$(BUILDDIR):
+	$(MKDIR) $@
 
 install: komplement konfigure
 	$(MKDIR) $(MAPPINGS_PATH)
@@ -36,42 +56,39 @@ uninstall:
 	@echo "NOTE: The files in $(MAPPINGS_PATH) and $(PRESETS_PATH) have not been deleted."
 
 clean:
-	$(RM) -f *.o komplement konfigure
+	$(RM) -f $(BUILDDIR)/*.o komplement konfigure
 
-.c.o:
-	$(GCC) $(CFLAGS) -c $<
+$(BUILDDIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-alsa.o: alsa.h alsa.c defs.h
+$(BUILDDIR)/alsa.o: $(SRCDIR)/alsa.h $(SRCDIR)/alsa.c $(SRCDIR)/defs.h
 
-mmc_stuff.o: mmc_stuff.h mmc_stuff.c defs.h
+$(BUILDDIR)/mmc_stuff.o: $(SRCDIR)/mmc_stuff.h $(SRCDIR)/mmc_stuff.c $(SRCDIR)/defs.h
 
-config.o: config.h config.c uinput_stuff.h button_names.h defs.h mmc_stuff.h
+$(BUILDDIR)/config.o: $(SRCDIR)/config.h $(SRCDIR)/config.c $(SRCDIR)/uinput_stuff.h $(SRCDIR)/button_names.h $(SRCDIR)/defs.h $(SRCDIR)/mmc_stuff.h
 
-mapping.o: mapping.h mapping.c defs.h
+$(BUILDDIR)/mapping.o: $(SRCDIR)/mapping.h $(SRCDIR)/mapping.c $(SRCDIR)/defs.h
 
-komplement.o: button_names.h komplement.c button_leds.h version.h defs.h alsa.h mmc_stuff.h
+$(BUILDDIR)/komplement.o: $(SRCDIR)/button_names.h $(SRCDIR)/komplement.c $(SRCDIR)/button_leds.h $(SRCDIR)/version.h $(SRCDIR)/defs.h $(SRCDIR)/alsa.h $(SRCDIR)/mmc_stuff.h
 
-button_names.o: button_names.c button_names.h defs.h 
+$(BUILDDIR)/button_names.o: $(SRCDIR)/button_names.c $(SRCDIR)/button_names.h $(SRCDIR)/defs.h 
 
-hid.o: hid.c hid.h
+$(BUILDDIR)/hid.o: $(SRCDIR)/hid.c $(SRCDIR)/hid.h
 
-button_leds.o: button_leds.c button_leds.h defs.h hid.h
+$(BUILDDIR)/button_leds.o: $(SRCDIR)/button_leds.c $(SRCDIR)/button_leds.h $(SRCDIR)/defs.h $(SRCDIR)/hid.h
 
-uinput_stuff.o: uinput_stuff.c uinput_stuff.h defs.h
+$(BUILDDIR)/uinput_stuff.o: $(SRCDIR)/uinput_stuff.c $(SRCDIR)/uinput_stuff.h $(SRCDIR)/defs.h
 
 # `komplementary` is the user space utility that translates
 # HID events to keypresses.
-komplement: komplement.o button_names.o uinput_stuff.o mapping.o config.o hid.o button_leds.o alsa.o mmc_stuff.o
-	$(GCC) -o komplement \
-		komplement.o button_names.o uinput_stuff.o alsa.o \
-		mapping.o config.o hid.o button_leds.o mmc_stuff.o \
-		$(KOMPLEMENT_LFLAGS)
+komplement: $(KOMPLEMENT_OBJECTS)
+	$(CC) -o komplement $(KOMPLEMENT_OBJECTS) $(KOMPLEMENT_LFLAGS)
 
 # `konfigure` is a binary that creates SysEx to send to the
 # device to configure the mappings.
-konfigure.o: konfigure.c konfigure.h konfigure_parser.h version.h
+$(BUILDDIR)/konfigure.o: $(SRCDIR)/konfigure.c $(SRCDIR)/konfigure.h $(SRCDIR)/konfigure_parser.h $(SRCDIR)/version.h
 
-konfigure_parser.o: konfigure_parser.c konfigure_parser.h
+$(BUILDDIR)/konfigure_parser.o: $(SRCDIR)/konfigure_parser.c $(SRCDIR)/konfigure_parser.h
 
-konfigure: konfigure.o konfigure_parser.o
-	$(GCC) -o konfigure konfigure.o konfigure_parser.o $(KONFIGURE_LFLAGS)
+konfigure: $(KONFIGURE_OBJECTS)
+	$(CC) -o konfigure $(KONFIGURE_OBJECTS) $(KONFIGURE_LFLAGS)

@@ -5,8 +5,9 @@
 #define BUFFER_SZ 256
 
 /*
- * Read configuration file. The file consists of simple
- * mapping:
+ * Read configuration file. This is very straight-forward and naive. 
+ * 
+ * The file consists of simple mapping configuration like so:
  * 
  * Button0=LeftCtrl,Z
  * Button39=LeftCtrl,LeftShift,Z
@@ -19,10 +20,9 @@ int config_read( char * filename, int verbose )
     int  keys[ 4 ];
     
     int  buflen = 0;
-    int  keylen = 0;
 
-    char c;
-    
+
+    char c;    
     int fd;
     
     if (access( filename, F_OK ) != 0)
@@ -36,8 +36,14 @@ int config_read( char * filename, int verbose )
         
         if (access( temp_path, F_OK ) == -1)        
         {
-            if (verbose) printf( "The file `%s` could not be found in the current path, nor in the mappings folder " MAPPINGS_PATH ".\n", filename );
-            return -1;
+            if (verbose) 
+            {
+                printf( "The file `%s` could not be found in the current path, "\
+                    "nor in the mappings folder " MAPPINGS_PATH\
+                    ".\n", 
+                    filename 
+                );
+            }
 
             return -1;
         }
@@ -65,8 +71,6 @@ int config_read( char * filename, int verbose )
     
     memset( buffer, 0, sizeof buffer );
     memset( keys,   0, sizeof keys );
-    
-    int phase = 0; // 0 = reading button name, 1 = reading first key, 2 = reading second, etc.
     
     int button_index = -1;
     
