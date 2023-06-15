@@ -1,7 +1,9 @@
+> 2023-06-15 This project will not be maintained because the unit I had was buggy (garbled OLED) and the replacement unit is buggy too so am going to buy a different brand. I do hope this project to be useful for anyone else so leaving the code up.
+
+
 # Komplementary Kontrol #
 _Unofficial Linux support for the Komplete Kontrol A-series keyboard by Native Instruments_
-
-> I am in no way affiliated with Native Instruments - I just like their kit.
+> I am in no way affiliated with Native Instruments 
 
 ## DISCLAIMER : USE THIS AT YOUR OWN RISK ##
 I cannot be held responsible for any problems that might arise
